@@ -50,6 +50,15 @@ When building the esp-idf project it may come to some compilation errors due to 
       incompatible types when initializing type 'const ip_addr_t * {aka const struct ip_addr *}' 
       using type'ip_addr_t {aka struct ip_addr}' const ip_addr_t *addr = dns_getserver(s);
 - Fix:
+In file *esp-idf/components/lwip/lwip/src/core/ipv6/nd6.c:565*
+   ```C
+        ...
+        // const ip_addr_t *addr = dns_getserver(s);
+        ip_addr_t addr = dns_getserver(s);
+        // if(ip_addr_cmp(addr, &rdnss_address)) {
+        if(ip_addr_cmp(&addr, &rdnss_address)) {
+        ...
+   ```
 #### Error 2
 - Error output:
    ```
@@ -60,7 +69,20 @@ When building the esp-idf project it may come to some compilation errors due to 
         {aka const struct ip_addr *}' from type 'ip_addr_t {aka struct ip_addr}'
         dns_ip = dns_getserver(type);
 - Fix:
-
+In file *esp-idf/components/tcpip_adapter/tcpip_adapter_lwip.c:778*
+    ```C
+        // const ip_addr_t*  dns_ip = NULL;
+        ip_addr_t dns_ip;
+        ...
+        if (tcpip_if == TCPIP_ADAPTER_IF_STA || tcpip_if == TCPIP_ADAPTER_IF_ETH) {
+            dns_ip = dns_getserver(type);
+            //if (dns_ip != NULL) {
+            //    dns->ip = *dns_ip;                                                                             
+            //}
+            dns->ip = dns_ip;
+        ...
+    ```
+    
 ## Configuration
 In the main/main.cpp file change the values of the *ssid* and *password* variables to the credentials of the WIFI network the ESP32 should connect to.
 
