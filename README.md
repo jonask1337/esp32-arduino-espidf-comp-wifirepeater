@@ -33,20 +33,34 @@ Based on instruction from: https://github.com/espressif/arduino-esp32/blob/maste
 
 ### Step 6 - Build and flash project
 You should be now able to build the project and flash it to the esp32.
+
 For this either use `idf.py flash` (CMake build system) or `make flash` (make build system).
+
 For more details on building and flashing esp-idf projects see the official *Get Started* guide for ESP-IDF from Step 1.
 
 ### Fix Compilation Errors
 When building the esp-idf project it may come to some compilation errors due to incompatibilities with components.
 
 #### Error 1
-- Error output may look like:
-  ```bash
+- Error output:
+  ```
       /home/jonas/test_arduino_wifirepeater_setup/esp-idf/components/lwip/lwip/src/core/ipv6/nd6.c: 
       In function 'nd6_input': 
       /home/jonas/test_arduino_wifirepeater_setup/esp-idf/components/lwip/lwip/src/core/ipv6/nd6.c:565:39: error: 
       incompatible types when initializing type 'const ip_addr_t * {aka const struct ip_addr *}' 
       using type'ip_addr_t {aka struct ip_addr}' const ip_addr_t *addr = dns_getserver(s);
+- Fix:
+#### Error 2
+- Error output:
+   ```
+        home/jonas/test_arduino_wifirepeater_setup/esp-idf/components/tcpip_adapter/tcpip_adapter_lwip.c: 
+        In function 'tcpip_adapter_get_dns_info':
+        /home/jonas/test_arduino_wifirepeater_setup/esp-idf/components/tcpip_adapter/tcpip_adapter_lwip.c:797:16: 
+        error: incompatible types when assigning to type 'const ip_addr_t * 
+        {aka const struct ip_addr *}' from type 'ip_addr_t {aka struct ip_addr}'
+        dns_ip = dns_getserver(type);
+- Fix:
+
 ## Configuration
 In the main/main.cpp file change the values of the *ssid* and *password* variables to the credentials of the WIFI network the ESP32 should connect to.
 
